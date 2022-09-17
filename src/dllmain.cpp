@@ -47,6 +47,7 @@ DWORD PlayerHealthMaxAddr;
 DWORD PlayerManaAddr;
 DWORD PlayerManaMaxAddr;
 DWORD PlayerIDAddr;
+DWORD PlayerCreatureInfoAddr;
 
 DWORD CreateGlContext;
 DWORD DeleteGlContext;
@@ -344,6 +345,9 @@ void HookDrawManaBar(int nSurface, int X, int Y, int W, int H, int SkinId, int d
 #if (!defined(__CONFIG__) && defined(__MANABAR__)) || defined(__CONFIG__)
 void __stdcall MyDrawHPBar(DWORD nSurface, DWORD X, DWORD Y, DWORD W, DWORD creaturePointer/*this should be height but we don't need it so we hack our way'*/, DWORD nRed, DWORD nGreen, DWORD nBlue)
 {
+	if (*(DWORD*)PlayerCreatureInfoAddr == 1)
+		return;
+
 	if(nRed == 0 && nGreen == 0 && nBlue == 0)//skip drawing black bar
 		return;
 
@@ -591,6 +595,7 @@ static HRESULT WINAPI Init( bool extended, bool transparent)
 			PlayerManaAddr = (client_BaseAddr+0x23FE78);
 			PlayerManaMaxAddr = (client_BaseAddr+0x23FE74);
 			PlayerIDAddr = (client_BaseAddr+0x23FE98);
+			PlayerCreatureInfoAddr = (client_BaseAddr+0x39C314);
 
 			newRenderer = (Render_NEW *) calloc(1, sizeof(*newRenderer));
 			if(!newRenderer)
